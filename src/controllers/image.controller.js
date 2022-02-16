@@ -5,6 +5,24 @@ import md5 from "md5";
 import sidebar from "../helpers/sidebar";
 import { randomNumber } from "../helpers/libs";
 import { Image, Comment } from "../models";
+import multer from "multer";
+
+/*
+const  multer_memory = require('multer')
+const inMemory =  multer.memoryStorage()
+const upload =  multer_memory({
+  storage: inMemory
+}).single('image')
+
+const azure_blob = require('azure-storage')
+const blobservice =  azure_blob.createBlobService('DefaultEndpointsProtocol=https;AccountName=imageshareblobstorage;AccountKey=do4nQNhvTa5KHmQfcmFc1ySwEZTHB2NX53mT7GJHoFrQqRrBQw+zghnu8wF2CBabOZ3VWCaDBhfg+AStdy9qGw==;EndpointSuffix=core.windows.net')
+const containerName = 'shareimage'
+const getStream  = require('stream')
+*/
+const getBlobName = (originalName) => {
+  const identifier =  Math.random().toString().replace('/0\./');
+  return `${identifier}-${originalName}`
+}
 
 export const index = async (req, res, next) => {
   let viewModel = { image: {}, comments: [] };
@@ -65,8 +83,10 @@ export const create = (req, res) => {
           description: req.body.description,
         });
 
+
         // save the image
         const imageSaved = await newImg.save();
+
 
         // redirect to the list of images
         res.redirect("/images/" + imageSaved.uniqueId);
